@@ -16,6 +16,7 @@
       iframe {
         width: 100%;
         height: 200px;
+        cursor: pointer;
       }
       button {
         margin: 10px;
@@ -45,11 +46,27 @@
 
       videoIds.forEach((id) => {
         let iframe = document.createElement("iframe");
-        iframe.src = `https://www.youtube.com/embed/${id}?enablejsapi=1`;
-        iframe.allow = "autoplay; encrypted-media";
+        iframe.src = `https://www.youtube.com/embed/${id}?vq=hd1080&autoplay=1&enablejsapi=1`;
+        iframe.allow = "autoplay; encrypted-media; fullscreen";
+        iframe.allowFullscreen = true;
         iframe.dataset.videoId = id;
+        iframe.onclick = function () {
+          openFullscreen(iframe);
+        };
         videoContainer.appendChild(iframe);
       });
+
+      function openFullscreen(iframe) {
+        if (iframe.requestFullscreen) {
+          iframe.requestFullscreen();
+        } else if (iframe.mozRequestFullScreen) {
+          iframe.mozRequestFullScreen();
+        } else if (iframe.webkitRequestFullscreen) {
+          iframe.webkitRequestFullscreen();
+        } else if (iframe.msRequestFullscreen) {
+          iframe.msRequestFullscreen();
+        }
+      }
 
       function playAll() {
         document.querySelectorAll("iframe").forEach((iframe) => {
