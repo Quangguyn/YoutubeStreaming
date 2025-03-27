@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Multi-Stream</title>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <style>
+      body {
+        text-align: center;
+        font-family: Arial, sans-serif;
+        background-color: #eef2f3;
+        margin: 0;
+        padding: 20px;
+      }
+      h1 {
+        color: #333;
+      }
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        max-width: 1200px;
+        margin: auto;
+      }
+      iframe {
+        width: 100%;
+        height: 200px;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      }
+      select {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background: white;
+        cursor: pointer;
+        margin-bottom: 20px;
+      }
+      select:hover {
+        border-color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>YouTube Multi-Stream</h1>
+    <select id="songSelector" onchange="redirectToSong()">
+      <option value="">-- SELECT SONG --</option>
+      <option value="Unfreeze.html">Unfreeze</option>
+      <option value="lighthouse.html">LIGHTHOUSE</option>
+      <option value="vroomvroom.html">VROOM VROOM</option>
+      <option value="dangerous.html">DANGEROUS</option>
+      <option value="CSSN.html">CAN'T STOP SHINING</option>
+      <option value="test.html">TEST</option>
+    </select>
+    <div class="video-grid" id="videoContainer"></div>
+
+    <script>
+      // Danh sách video mới không lưu trong localStorage
+      let videoIds = [
+        "v6WIePs7U4g", // Đổi ID video theo nhu cầu
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+        "v6WIePs7U4g",
+      ];
+
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("Danh sách video hiện tại:", videoIds); // Kiểm tra danh sách video
+        onYouTubeIframeAPIReady();
+      });
+
+      function redirectToSong() {
+        var selector = document.getElementById("songSelector");
+        var url = selector.value;
+        if (url) {
+          window.location.href = url;
+        }
+      }
+
+      function onYouTubeIframeAPIReady() {
+        const videoContainer = document.getElementById("videoContainer");
+        videoContainer.innerHTML = ""; // Xóa nội dung cũ để tránh trùng lặp
+
+        videoIds.forEach((id, index) => {
+          let div = document.createElement("div");
+          div.id = `player${index}`;
+          videoContainer.appendChild(div);
+
+          new YT.Player(`player${index}`, {
+            height: "200",
+            width: "100%",
+            videoId: id,
+            playerVars: {
+              modestbranding: 1,
+              rel: 0,
+              showinfo: 0,
+              controls: 1,
+              autoplay: 0,
+            },
+            events: {
+              onError: function (event) {
+                console.error(`Lỗi khi tải video ${id}:`, event);
+              },
+            },
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
