@@ -4,18 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>YouTube Multi-Stream</title>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
       body {
         text-align: center;
         font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
+        background-color: #eef2f3;
         margin: 0;
         padding: 20px;
       }
+      h1 {
+        color: #333;
+      }
       .video-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
         max-width: 1200px;
         margin: auto;
       }
@@ -23,96 +27,96 @@
         width: 100%;
         height: 200px;
         border: none;
-        cursor: pointer;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
       }
-      .controls {
+      select {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background: white;
+        cursor: pointer;
         margin-bottom: 20px;
       }
-      button {
-        padding: 10px 20px;
-        font-size: 16px;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-        background-color: #007bff;
-        color: white;
-        margin: 5px;
-      }
-      button:hover {
-        background-color: #0056b3;
+      select:hover {
+        border-color: #007bff;
       }
     </style>
   </head>
   <body>
     <h1>YouTube Multi-Stream</h1>
-    <div class="controls">
-      <button onclick="playAll()">Play All</button>
-      <button onclick="pauseAll()">Pause All</button>
-    </div>
+    <select id="songSelector" onchange="redirectToSong()">
+      <option value="">-- SELECT SONG --</option>
+      <option value="Unfreeze.html">Unfreeze</option>
+      <option value="lighthouse.html">LIGHTHOUSE</option>
+      <option value="vroomvroom.html">VROOM VROOM</option>
+      <option value="dangerous.html">DANGEROUS</option>
+      <option value="CSSN.html">CAN'T STOP SHINING</option>
+      <option value="index.html">TEST</option>
+    </select>
     <div class="video-grid" id="videoContainer"></div>
 
     <script>
-      const videoIds = [
-        "IWa4Oqwyc1o",
-         "IWa4Oqwyc1o",
-       "IWa4Oqwyc1o",
-      "IWa4Oqwyc1o",
-      "IWa4Oqwyc1o",
-       "IWa4Oqwyc1o",
-      "IWa4Oqwyc1o",
-      "IWa4Oqwyc1o",
-       "IWa4Oqwyc1o",
-        "IWa4Oqwyc1o",
-       "IWa4Oqwyc1o",
-        "IWa4Oqwyc1o",
-        "IWa4Oqwyc1o",
-       "IWa4Oqwyc1o",
-      "IWa4Oqwyc1o",
-         "IWa4Oqwyc1o",
-      ]; // Replace with actual video IDs
-      const videoContainer = document.getElementById("videoContainer");
+      // Danh sách video mới không lưu trong localStorage
+      let videoIds = [
+        "9eDKaFYWJhA", // Đổi ID video theo nhu cầu
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+        "9eDKaFYWJhA",
+      ];
 
-      videoIds.forEach((id) => {
-        let iframe = document.createElement("iframe");
-        iframe.src = `https://www.youtube.com/embed/${id}?vq=hd1080&enablejsapi=1&autoplay=0`;
-        iframe.allow = "autoplay; encrypted-media; fullscreen";
-        iframe.allowFullscreen = true;
-        iframe.dataset.videoId = id;
-        iframe.onclick = function () {
-          openFullscreen(iframe);
-        };
-        videoContainer.appendChild(iframe);
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("Danh sách video hiện tại:", videoIds); // Kiểm tra danh sách video
+        onYouTubeIframeAPIReady();
       });
 
-      function openFullscreen(iframe) {
-        if (iframe.requestFullscreen) {
-          iframe.requestFullscreen();
-        } else if (iframe.mozRequestFullScreen) {
-          iframe.mozRequestFullScreen();
-        } else if (iframe.webkitRequestFullscreen) {
-          iframe.webkitRequestFullscreen();
-        } else if (iframe.msRequestFullscreen) {
-          iframe.msRequestFullscreen();
+      function redirectToSong() {
+        var selector = document.getElementById("songSelector");
+        var url = selector.value;
+        if (url) {
+          window.location.href = url;
         }
       }
 
-      function playAll() {
-        document.querySelectorAll("iframe").forEach((iframe) => {
-          iframe.contentWindow.postMessage(
-            '{"event":"command","func":"playVideo","args":""}',
-            "*"
-          );
-        });
-      }
+      function onYouTubeIframeAPIReady() {
+        const videoContainer = document.getElementById("videoContainer");
+        videoContainer.innerHTML = ""; // Xóa nội dung cũ để tránh trùng lặp
 
-      function pauseAll() {
-        document.querySelectorAll("iframe").forEach((iframe) => {
-          iframe.contentWindow.postMessage(
-            '{"event":"command","func":"pauseVideo","args":""}',
-            "*"
-          );
+        videoIds.forEach((id, index) => {
+          let div = document.createElement("div");
+          div.id = `player${index}`;
+          videoContainer.appendChild(div);
+
+          new YT.Player(`player${index}`, {
+            height: "200",
+            width: "100%",
+            videoId: id,
+            playerVars: {
+              modestbranding: 1,
+              rel: 0,
+              showinfo: 0,
+              controls: 1,
+              autoplay: 0,
+            },
+            events: {
+              onError: function (event) {
+                console.error(`Lỗi khi tải video ${id}:`, event);
+              },
+            },
+          });
         });
       }
     </script>
